@@ -1,5 +1,5 @@
 (defproject ffosrepl "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "a ClojureScript REPL environment for Firefox OS"
   :url "http://example.com/FIXME"
   :license {:name "Unlicense"
             :url "http://unlicense.org/"}
