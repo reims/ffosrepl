@@ -7,8 +7,7 @@
             [cljs.env :as env]
             [clojure.set :as set]))
 
-(declare transitive-deps
-         ffos-setup-env
+(declare ffos-setup-env
          ffos-evaluate-js
          ffos-load-js
          ffos-tear-down)
@@ -32,10 +31,8 @@
                      :ffos-proto (atom {})}
                     opts)]
     (swap! compiler-env assoc :js-dependency-index (js-deps/js-dependency-index opts))
-    (env/with-compiler-env (::env/compiler opts)
-      (reset! (:loaded-libs opts)
-              (set/union (into #{} (map str (:preloaded-libs opts)))
-                         (transitive-deps ["ffosrepl.repl"] opts))))
+    (reset! (:loaded-libs opts)
+            (into #{} (map str (:preloaded-libs opts))))
     opts))
 
 
@@ -44,6 +41,8 @@
         webapps-actor (proto/get-webapps-actor! connection)
         manifest-url (proto/get-manifest-url! connection webapps-actor app-name)]
     (proto/ensure-app-is-running! connection webapps-actor manifest-url)
+    (require 'cljs.repl.reflect)
+    (cmp/with-core-cljs)
     (cljs.repl/analyze-source src)
     (let [console-actor (proto/get-console-actor! connection webapps-actor manifest-url)]
       (swap! ffos-proto assoc
@@ -71,13 +70,4 @@
 (defn- ffos-tear-down [opts]
   (proto/close! (:connection @(:ffos-proto opts))))
 
-(defn- transitive-deps
-  "Returns a flattened set of all transitive namespaces required and
-  provided by the given sequence of namespaces
 
-  stolen from weasel repl source"
-  [nses opts]
-  (let [collect-deps #(flatten (mapcat (juxt :provides :requires) %))
-        cljs-deps (->> nses (cljsc/cljs-dependencies opts) collect-deps)
-        js-deps (->> cljs-deps (cljsc/js-dependencies opts) collect-deps)]
-    (disj (into #{} (concat js-deps cljs-deps)) nil)))
