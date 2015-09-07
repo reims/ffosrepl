@@ -23,27 +23,30 @@
 
 (defn- receive! [connection]
   (loop [packet ""]
-    (let [data (to-string (deref (s/take! connection); 50000 nil
-                                 ))
-          new-packet (str packet data)
-          length (packet-length new-packet)
-          json (packet->json new-packet)]
-      (if (> length (count (to-byte-array json)))
-        (recur new-packet)
-        (packet->edn new-packet)))))
+    (if-let [byte-data (deref (s/take! connection) 5000 nil)]
+      (let [data (to-string byte-data)
+            new-packet (str packet data)
+            length (packet-length new-packet)
+            json (packet->json new-packet)]
+        (if (> length (count (to-byte-array json)))
+          (recur new-packet)
+          (packet->edn new-packet)))
+      (throw (Exception. "timeout while waiting for message from client.")))))
 
 (defn send-sync! [connection data]
   (let [packet (edn->packet data)
-        success @(s/put! connection packet)]
-    (when success
-      (receive! connection))))
+        success (deref (s/put! connection packet) 5000 nil)]
+    (if success
+      (receive! connection)
+      (throw (Exception. "timeout or error while sending to client.")))))
 
 (defn connect! [host port]
-  (let [client (tcp/client {:host host :port port})
-        connection @client
-        reply (receive! connection)]
-    (when (:applicationType reply)
-      connection)))
+  (let [client (tcp/client {:host host :port port})]
+    (if-let [connection (deref client 5000 nil)]
+      (let [reply (receive! connection)]
+        (when (:applicationType reply)
+          connection))
+      (throw (Exception. "timeout while connecting to client.")))))
 
 (defn close! [connection]
   (s/close! connection))
