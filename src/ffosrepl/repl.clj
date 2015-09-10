@@ -35,7 +35,6 @@
             (into #{} (map str (:preloaded-libs opts))))
     opts))
 
-
 (defn- ffos-setup-env [{:keys [host port app-name ffos-proto src] :as opts}]
   (let [connection (proto/connect! host port)
         webapps-actor (proto/get-webapps-actor! connection)
@@ -49,7 +48,8 @@
              :connection connection
              :webapps-actor webapps-actor
              :manifest-url manifest-url
-             :console-actor console-actor))
+             :console-actor console-actor)
+      (proto/start-console-listener! connection console-actor))
     (env/with-compiler-env (::env/compiler opts)
       (ffos-evaluate-js opts (cljsc/compile-form-seq '[(ns cljs.user)])))))
 
