@@ -1,6 +1,6 @@
-(defproject ffosrepl "0.1.0-SNAPSHOT"
+(defproject ffosrepl "0.1.0"
   :description "a ClojureScript REPL environment for Firefox OS"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/reims/ffosrepl"
   :license {:name "Unlicense"
             :url "http://unlicense.org/"}
   :dependencies [[org.clojure/clojure "1.6.0"]
