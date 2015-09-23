@@ -57,12 +57,10 @@
     [packet-stream send-stream]))
 
 (defn- print-log-message [msg]
-  (let [args (-> msg
-                 :message
-                 :arguments)]
-    (when args
-      (newline)
-      (apply prn args))))
+  (when-let [args (-> msg
+                      :message
+                      :arguments)]
+    (apply prn args)))
 
 (defn- setup-connection! [tcp-connection]
   (let [[connection send-stream] (byte->packet-streams tcp-connection)
