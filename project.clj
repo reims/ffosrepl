@@ -1,4 +1,4 @@
-(defproject ffosrepl "0.1.0"
+(defproject ffosrepl "0.2.0-SNAPSHOT"
   :description "a ClojureScript REPL environment for Firefox OS"
   :url "https://github.com/reims/ffosrepl"
   :license {:name "Unlicense"
