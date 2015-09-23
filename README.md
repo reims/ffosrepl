@@ -1,5 +1,7 @@
 # ffosrepl
 
+[![Clojars Project](http://clojars.org/ffosrepl/latest-version.svg)](http://clojars.org/ffosrepl)
+
 Ffosrepl uses the Firefox [Remote Debugging Protocol][rdb] to connect a
 ClojureScript REPL to a [Firefox OS][ffos] device.
 
@@ -20,11 +22,8 @@ middleware. So you need to set it up first. After that, add ffosrepl to the
 dependencies in your project.clj:
 
 ```clojure
-[ffosrepl "0.1.0-SNAPSHOT"]
+[ffosrepl "0.2.0-SNAPSHOT"]
 ```
-
-__Note:__ Since ffosrepl is not yet available on Clojars, you will have to clone
-this repository and install ffosrepl with `lein install`.
 
 You then have to forward the debugger socket of your device to a port on your
 localhost:
@@ -54,8 +53,6 @@ cljs.user>
 
 ## TODO
 
-- Add some kind of error handling and timeouts for everything that goes over the
-  tcp connection.
 - Automate the forwarding of the debugger socket.
 - Make a library out of the Remote Debugging Protocol implementation. This
   library can then be used to write a leiningen plugin to install, start and
