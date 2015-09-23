@@ -3,6 +3,8 @@
   :url "https://github.com/reims/ffosrepl"
   :license {:name "Unlicense"
             :url "http://unlicense.org/"}
+  :scm {:name "git"
+        :url "https://github.com/reims/ffosrepl"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [aleph "0.4.0-alpha9"]
                  [byte-streams "0.2.0-alpha3"]
